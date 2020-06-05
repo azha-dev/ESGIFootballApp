@@ -113,14 +113,16 @@ class FootballAppTest extends FlatSpec with SparkTest {
     )
 
      //Then
-    val result = getJoinData(df1, df2)
+    val result = getJoinData(df1, df2).orderBy("adversaire")
 
      //Expected
     val expected = dataframe(
-      "{adversaire: \"Italie\", date: \"2017-03-06\", stat_adversaire: \"Italie\", competition: \"Match amical\"}",
-      "{adversaire: \"Pays-Bas\", date: \"2019-03-26\", stat_adversaire: \"Pays-Bas\", competition: \"Coupe du monde\"}",
-      "{adversaire: \"URSS\", date: \"2012-12-12\", stat_adversaire: \"URSS\", competition: \"Match amical\"}",
-      "{adversaire: \"Allemagne\", date: \"2006-03-26\", stat_adversaire: \"Allemagne\", competition: \"Coupe du monde\"}"
-    )
+      "{adversaire: \"Italie\", date: \"2017-03-06\", competition: \"Match amical\"}",
+      "{adversaire: \"Pays-Bas\", date: \"2019-03-26\", competition: \"Coupe du monde\"}",
+      "{adversaire: \"URSS\", date: \"2012-12-12\", competition: \"Match amical\"}",
+      "{adversaire: \"Allemagne\", date: \"2006-03-26\", competition: \"Coupe du monde\"}"
+    ).orderBy("adversaire")
+
+    result.assertEquals(expected)
   }
 }

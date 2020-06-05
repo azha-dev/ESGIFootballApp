@@ -120,7 +120,7 @@ object FootballApp {
         count(df("adversaire")).alias("nombre_rencontre"),
         (sum(df("Domicile").cast(IntegerType))/count(df("Domicile"))*100).alias("pourcentage_jouer_domicile_france"),
         sum(df("competition").startsWith("Coupe du monde").cast(IntegerType)).alias("nombre_rencontre_coupe_du_monde"),
-        (sum("penalty_france") - sum("penalty_adversaire")).alias("ratio_penalty")
+        (sum("penalty_france") - sum("penalty_adversaire")).alias("difference_penalty")
       )
   }
 
@@ -134,7 +134,7 @@ object FootballApp {
     df.join(
       dfStatistiques,
       df("adversaire") === dfStatistiques("stat_adversaire")
-    )
+    ).drop("stat_adversaire")
   }
 
   def writeDFInParquetByYearAndMonth(df: DataFrame, filePath: String): Unit = {
