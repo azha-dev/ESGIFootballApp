@@ -1,8 +1,8 @@
 # ESGIFootballApp
 
 ## Prérequis 
-⋅⋅* Apache Maven 3.6.3
-⋅⋅* Spark 2.4.5
+* Apache Maven 3.6.3
+* Spark 2.4.5
 
 ## Lancement du projet : 
 
