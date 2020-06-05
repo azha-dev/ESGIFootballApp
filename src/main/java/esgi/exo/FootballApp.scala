@@ -51,11 +51,11 @@ object FootballApp {
 
     val dfStatistiques = calculStats(df);
 
-    writeDFInParquet(dfStatistiques, "./src/data/stats.parquet")
+    writeDFInParquet(dfStatistiques, "../data/stats.parquet")
 
     val finalDf = getJoinData(df, dfStatistiques)
 
-    writeDFInParquetByYearAndMonth(finalDf, "./src/data/result.parquet")
+    writeDFInParquetByYearAndMonth(finalDf, "../data/result.parquet")
   }
   val penaltyStringToInt: String => Int = (penaltyValue) => {
     if(penaltyValue == "NA") {
