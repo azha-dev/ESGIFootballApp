@@ -10,7 +10,7 @@ mvn -DskipTests clean package
 
 Pour lancer le projet, utiliser la commande suivante : 
 ```
-spark-submit --class esgi.exo.FootballApp --master local[*] esgi-1.0-SNAPSHOT.jar "path_to.csv"
+spark-submit --class esgi.exo.FootballApp --master local[*] ./target/esgi-1.0-SNAPSHOT.jar "path_to.csv"
 ```
 
 Le dernier argument path_to.csv correspond au chemin du CSV que vous souhaitez utiliser.
