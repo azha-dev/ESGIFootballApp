@@ -63,7 +63,6 @@ object FootballApp {
     finalDf.filter(finalDf("adversaire")==="Angleterre").show(10)
     writeDFInParquetByYearAndMonth(finalDf, "./src/data/result.parquet")
   }
-  //UDF permettant de transormer une string en Int ou 0 si la valeur egale NA
   val penaltyStringToInt: String => Int = (penaltyValue) => {
     if(penaltyValue == "NA") {
       0
@@ -72,7 +71,6 @@ object FootballApp {
     }
   }
 
-  //Utilise l'udf penaltyStringToInt pour transformer les penalty
   def penaltyNAto0orToInt(df: DataFrame): DataFrame = {
     val UDFPenaltyStringToInt = udf(penaltyStringToInt)
     df
@@ -80,7 +78,6 @@ object FootballApp {
       .withColumn("penalty_adversaire", UDFPenaltyStringToInt(df("penalty_adversaire")))
   }
 
-  //Selectionne les colonnes utiles
   def selectUsefulColumn(df: DataFrame): DataFrame = {
     df.select(
       df("match"),
@@ -92,12 +89,10 @@ object FootballApp {
       df("penalty_adversaire"),
       df("date"))
   }
-  //Filtre les dates en ne gardant que celles supérieures au param date
   def filterDate(df: DataFrame, date:String ): DataFrame = {
     df.filter(df("date").gt(lit(date)))
   }
 
-  //Utilise les différentes fonctions pour nettoyer les data et renvoieune df propre
   def cleanData(df: DataFrame): DataFrame = {
 
     val dfWithIntPenalty = penaltyNAto0orToInt(df)
