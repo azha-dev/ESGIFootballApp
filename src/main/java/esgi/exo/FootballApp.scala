@@ -49,11 +49,11 @@ object FootballApp {
     df = cleanData(df)
     df = addColumnHome(df)
 
-    val dfStatistiques = calculStats(df);
+    val dfStats = calculStats(df);
 
-    writeDFInParquet(dfStatistiques, "./data/stats.parquet")
+    writeDFInParquet(dfStats, "./data/stats.parquet")
 
-    val finalDf = getJoinData(df, dfStatistiques)
+    val finalDf = getJoinData(df, dfStats)
 
     writeDFInParquetByYearAndMonth(finalDf, "./data/result.parquet")
   }
@@ -119,7 +119,7 @@ object FootballApp {
         avg(df("score_adversaire")).alias("moyenne_score_adversaire"),
         count(df("adversaire")).alias("nombre_rencontre"),
         (sum(df("Domicile").cast(IntegerType))/count(df("Domicile"))*100).alias("pourcentage_jouer_domicile_france"),
-        count(df("competition").startsWith("Coupe du monde")).alias("nombre_rencontre_coupe_du_monde"),
+        sum(df("competition").startsWith("Coupe du monde").cast(IntegerType)).alias("nombre_rencontre_coupe_du_monde"),
         (sum("penalty_france") - sum("penalty_adversaire")).alias("ratio_penalty")
       )
   }

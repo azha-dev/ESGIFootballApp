@@ -73,4 +73,54 @@ class FootballAppTest extends FlatSpec with SparkTest {
     result.assertEquals(expected)
   }
 
+  "addColumnHome" should "return a Dataframe with new column 'Domicile' based on given column 'match' and Domicile should be true when 'match' start by France" in {
+    //Given
+    val df = dataframe(
+      "{match: \"France - Italie\"}",
+      "{match: \"Angleterre - Italie\"}",
+      "{match: \"Angleterre - France\"}",
+      "{match: \"France - Angleterre\"}"
+    )
+
+    //When
+    val result = addColumnHome(df)
+
+    //Then
+    val expected =  dataframe(
+      "{match: \"France - Italie\", Domicile: true}",
+      "{match: \"Angleterre - Italie\", Domicile: false}",
+      "{match: \"Angleterre - France\", Domicile: false}",
+      "{match: \"France - Angleterre\", Domicile: true}"
+    )
+
+    result.assertEquals(expected)
+  }
+
+  "getJoinData" should "return a join Dataframe of the two Dataframe in parameters, on column 'adversaire' and 'stat_adversaire'" in {
+    //Given
+    val df1 = dataframe(
+      "{adversaire: \"Italie\", date: \"2017-03-06\"}",
+      "{adversaire: \"Pays-Bas\", date: \"2019-03-26\"}",
+      "{adversaire: \"URSS\", date: \"2012-12-12\"}",
+      "{adversaire: \"Allemagne\", date: \"2006-03-26\"}"
+    )
+
+    val df2 = dataframe(
+      "{stat_adversaire: \"Italie\", competition: \"Match amical\"}",
+      "{stat_adversaire: \"Pays-Bas\", competition: \"Coupe du monde\"}",
+      "{stat_adversaire: \"URSS\", competition: \"Match amical\"}",
+      "{stat_adversaire: \"Allemagne\", competition: \"Coupe du monde\"}"
+    )
+
+     //Then
+    val result = getJoinData(df1, df2)
+
+     //Expected
+    val expected = dataframe(
+      "{adversaire: \"Italie\", date: \"2017-03-06\", stat_adversaire: \"Italie\", competition: \"Match amical\"}",
+      "{adversaire: \"Pays-Bas\", date: \"2019-03-26\", stat_adversaire: \"Pays-Bas\", competition: \"Coupe du monde\"}",
+      "{adversaire: \"URSS\", date: \"2012-12-12\", stat_adversaire: \"URSS\", competition: \"Match amical\"}",
+      "{adversaire: \"Allemagne\", date: \"2006-03-26\", stat_adversaire: \"Allemagne\", competition: \"Coupe du monde\"}"
+    )
+  }
 }
