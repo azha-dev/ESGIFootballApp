@@ -56,11 +56,12 @@ object FootballApp {
 
     writeDFInParquet(dfStatistiques, "./src/data/stats.parquet")
 
+    val finalDf = getJoinData(df, dfStatistiques)
 
-
-
-    dfStatistiques.show(100)
-
+    df.show(10)
+    dfStatistiques.show(10)
+    finalDf.filter(finalDf("adversaire")==="Angleterre").show(10)
+    writeDFInParquetByYearAndMonth(finalDf, "./src/data/result.parquet")
   }
   //UDF permettant de transormer une string en Int ou 0 si la valeur egale NA
   val penaltyStringToInt: String => Int = (penaltyValue) => {
@@ -123,7 +124,7 @@ object FootballApp {
   }
 
   def calculStats(df: DataFrame): DataFrame = {
-    df.groupBy(df("adversaire"))
+    df.groupBy(df("adversaire").alias("stat_adversaire"))
       .agg(
         avg(df("score_france")).alias("moyenne_score_france"),
         avg(df("score_adversaire")).alias("moyenne_score_adversaire"),
@@ -135,8 +136,25 @@ object FootballApp {
   }
 
   def writeDFInParquet(df: DataFrame, filePath: String): Unit = {
-    df.write.parquet(filePath)
+    df.write
+      .mode("overwrite")
+      .parquet(filePath)
   }
 
+  def getJoinData(df: DataFrame, dfStatistiques: DataFrame): DataFrame = {
+    df.join(
+      dfStatistiques,
+      df("adversaire") === dfStatistiques("stat_adversaire")
+    )
+  }
 
+  def writeDFInParquetByYearAndMonth(df: DataFrame, filePath: String): Unit = {
+    df
+      .withColumn("year", year(df("date")))
+      .withColumn("month", month(df("date")))
+      .write
+      .partitionBy("year", "month")
+      .mode("overwrite")
+      .parquet(filePath)
+  }
 }
