@@ -3,6 +3,7 @@ package esgi.exo
 import io.univalence.sparktest.SparkTest
 import org.scalatest.FlatSpec
 import esgi.exo.FootballApp._
+import org.apache.spark.sql.types.IntegerType
 
 class FootballAppTest extends FlatSpec with SparkTest {
 
@@ -18,11 +19,14 @@ class FootballAppTest extends FlatSpec with SparkTest {
     val result = penaltyNAto0orToInt(df)
 
     //Then
-    val expected = dataframe(
+    var expected = dataframe(
       "{penalty_france: 0, penalty_adversaire: 5}",
       "{penalty_france: 0, penalty_adversaire: 0}",
       "{penalty_france: 2, penalty_adversaire: 0}"
     )
+    expected = expected.select(expected("penalty_france").cast(IntegerType), expected("penalty_adversaire").cast(IntegerType))
+
+
 
     result.assertEquals(expected)
   }

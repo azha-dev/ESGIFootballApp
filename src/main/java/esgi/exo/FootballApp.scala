@@ -8,9 +8,6 @@ import org.apache.spark.sql.expressions.Window
 
 object FootballApp {
 
-
-
-
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder()
@@ -58,9 +55,6 @@ object FootballApp {
 
     val finalDf = getJoinData(df, dfStatistiques)
 
-    df.show(10)
-    dfStatistiques.show(10)
-    finalDf.filter(finalDf("adversaire")==="Angleterre").show(10)
     writeDFInParquetByYearAndMonth(finalDf, "./src/data/result.parquet")
   }
   val penaltyStringToInt: String => Int = (penaltyValue) => {
@@ -89,7 +83,7 @@ object FootballApp {
       df("penalty_adversaire"),
       df("date"))
   }
-  def filterDate(df: DataFrame, date:String ): DataFrame = {
+   def filterDate(df: DataFrame, date:String ): DataFrame = {
     df.filter(df("date").gt(lit(date)))
   }
 
